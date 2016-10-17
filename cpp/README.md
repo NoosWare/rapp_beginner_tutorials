@@ -8,8 +8,8 @@
 In the following tutorial we are going to show you how to get up and running and how to make cloud calls.
 RAPP is divided in two main parts:
 
-1. RAPP platform which is either on a cloud server, or on a computer you've setup.
-2. RAPP API which is a library and  headers that you use to communicate with the platform.
+* a platform which is either on a cloud server, or on a computer you've setup.
+* an API which is a library and  headers that you use to communicate with the platform.
 
 The `service_controller` class is the controller used to run cloud calls. 
 When you instantiate an object, you have to specify the **address** and **port** of the platform.
@@ -256,7 +256,7 @@ In this scenario we define and implement a class which does just that.
 The `reactor` class methods will be used to handle cloud replies:
 
 ```cpp
-clas reactor
+class reactor
 {
 public:
 
@@ -280,7 +280,8 @@ public:
         std::cout << "Wind speed: " << weather.at(6) << std::endl;
     }
 
-    ...    
+    ...
+};
 ```
 
 The reactor class also wraps around a `service_controller` and thus
