@@ -1,7 +1,7 @@
 # Getting Started
 
-**_This tutorial assumes that RAPP API is installed and built_**
-**_This tutorial uses the 0.7.0 version_**
+* *This tutorial assumes that RAPP API is installed and built*
+* *This tutorial uses the 0.7.0 version* of the C++ API
 
 ## Service Controller
 
@@ -17,38 +17,38 @@ You can find an example [here](#example service controller and cloud call)
 
 ## Cloud call
 
-RAPP Cloud is based on the *PaaS* (Platform as a Service), 
+RAPP Cloud is based on the *PaaS* (Platform as a Service) principle, 
 and the core notion is that you make requests to the platform and you will receive replies.
-It is **important** to note that the calls are asynchronous, and therere will reply to your query
-in a non-deterministic manner. Different queries will require diffeerent processing time,
-and as such you can run other code on the robot whilst a query is running.
+It is **important** to note that the calls are asynchronous, and therefore the reply to your query
+is non-deterministic (it is not possible to guarantee time of execution). 
+Different queries will require different processing time,
+and as such you can run other code on the robot whilst a query is running on the cloud.
 
 ## Example service controller and cloud calls
 
-In the following example we query all the services that are available in the _rapp-platform_. 
+In the following example we query all the services that are available on the _rapp-platform_. 
 
 *Note:* for all examples we assume you've included the proper headers. 
 In this case we need:
 
-1. service_controller.hpp
-2. available_services.hpp
-3. iostream
+* `rapp/cloud/service_controller.hpp`
+* `rapp/cloud/available_services.hpp`
+* `iostream`
 
 Construct the `service_controller` object using a `rapp::cloud::platform` struct, which contains:
 
-1. platform address, hostname or IP (e.g., `rapp.ee.auth.gr` or `155.207.19.229`). 
-If running your own platform, use `localhost`
-2. the platform port (default is 9001)
-3. your authentication token
-
+* platform address, hostname or IP (e.g., `rapp.ee.auth.gr` or `155.207.19.229`). 
+* if running your own platform, use `localhost`
+* the platform port (default is 9001)
+* your authentication token (e.g., `rapp_token`)
 
 ```cpp
 rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
 ```
 
-The next step is to create a service controller (called `ctrl`), 
+The next step is to create a service controller (we call it `ctrl` in these examples),
 which is in charge of creating and controlling cloud calls to the platform.
-The only parameter needed is the information about the platform, which is saved in `info` variable:
+The only parameter needed is the information about the platform, which is saved in the `info` variable:
 
 ```cpp
 rapp::cloud::service_controller ctrl(info);
@@ -56,8 +56,8 @@ rapp::cloud::service_controller ctrl(info);
 
 ## Callback functors
 
-When making cloud calls, and due to their asyncrhonous nature, we pass callbacks.
-This approach is common throught the entire API, almost all cloud calls expect you to pass a callback functor.
+When making cloud calls, and due to their asyncrhonous nature, we pass callback parameters.
+This approach is common throught the entire API; almost all cloud calls expect you to pass a callback functor.
 For more information on callbacks, see: 
 * http://en.cppreference.com/w/cpp/language/lambda
 * http://en.cppreference.com/w/cpp/utility/functional/function
@@ -83,12 +83,12 @@ make
 For each example you'll end up with an executable in your `build` directory.
 If you're having trouble building the examples, feel free to chat with us on gitter.
 
-## Getting available services:
+## A simple cloud call:
 
 Lets make a call to available services class.
-The construct parameter is a callback functor, e.g., a *lambda* or *std::function*.
+The construct parameter is a callback functor, e.g., a *lambda* or `std::function`.
 It will receive an `std::vector<std::pair<std::string, std::string>>` which is
-a vector of pairs fo strings, the first string in the pair naming the service, and the second one defining the URL
+a vector of pairs f strings, the first string in the pair naming the service, and the second one defining the URL
 of the service.
 
 For more details, see: `rapp/cloud/available_services.hpp`
@@ -117,9 +117,9 @@ You can run multiple calls using multiple service controllers, or a batch of cal
 
 In the following example we are going to execute three actions at the same time:
 
-1. face detection
-2. human detection
-3. door angle detection
+* face detection
+* human detection
+* door angle detection
 
 Include the following headers:
 
@@ -135,20 +135,20 @@ rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"};
 rapp::cloud::service_controller ctrl(info);
 ```
 
-In this example we are going to use vision detection, so we need to load at least a picture.
-In this case we are going to detect everything in the same picture, for simplicty's shake.
+In this example we are going to use vision detection, so we need to load a picture.
+In this case we are going to detect faces, humans and doors in the same picture (for simplicty's shake).
 You can use the picture that you want using the correct path or use this example.
-If loading a picture from disk, then constuct a `rapp::object::picture` object.
+If loading a picture from disk, then constuct a `rapp::object::picture` object (replace *my_picture.jpg* with a valid one!).
 
 ```cpp
-auto pic = rapp::object::picture("data/object_classes_picture_7.jpg");
+auto pic = rapp::object::picture("my_picture.jpg");
 ```
 
 Each cloud call takes a different callback functor, so
 we'll create one for each call.
-*You can find more information in rapp/cloud/vision_detection.hpp*
+(You can find more information in `rapp/cloud/vision_detection.hpp`).
 
-For face detection:
+* face detection:
 
 ```cpp
 auto face_cb = [&](std::vector<rapp::object::face> faces) { 
@@ -156,7 +156,7 @@ auto face_cb = [&](std::vector<rapp::object::face> faces) {
 };
 ```
 
-For human detection:
+* human detection:
 
 ```cpp
 auto human_cb = [&](std::vector<rapp::object::human> humans) {
@@ -164,7 +164,7 @@ auto human_cb = [&](std::vector<rapp::object::human> humans) {
 };
 ```
 
-For door angle:
+* door angle:
 
 ```cpp
 auto hazard_cb = [&](double door_angle) {
@@ -173,8 +173,8 @@ auto hazard_cb = [&](double door_angle) {
 ```
 
 When we construct the batch, we construct the cloud call in a one-off statement
-as we execute `make_calls`.
-For a complete parameterlist of each class, please see the respective class documentation.
+as we execute `service_controller::make_calls`.
+For a complete parameter list of each class, please see the respective class documentation.
 
 ```cpp
 ctrl.make_calls(rapp::cloud::face_detection(pic, false, face_cb),
@@ -195,23 +195,23 @@ and then human detection.
 
 ## Cloud Loop
 
-In this part of the tutorial how to do a simple loop with the API.
-Because we don't want to spam the CPU with a constant `for` loop, 
-we'll use boost library's `async_wait` which will run at specific intervals. 
+In this part of the tutorial we'll show you how to do a simple loop with the API.
+Because we don't want to spam the CPU with a constant `for(;;)` loop, 
+we'll use boost library's `async_wait` which will run at a specific interval.
 
 Include the headers:
 
-1. service_controller.hpp
-2. vision_detection.hpp
-3. picture.hpp
-4. iostream
+* `rapp/cloud/service_controller.hpp`
+* `rapp/cloud/vision_detection.hpp`
+* `rapp/objects/picture.hpp`
+* `iostream`
+* `functional`
 
 Also (assuming you have `boost` installed) include:
 
-5. boost/asio.hpp
-6. functional
+* `boost/asio.hpp`
 
-Now, in our main program, we are going to initialize the service controller, the timer and a io_service needed to the timer:
+We initialize the service controller, the timer and a io_service needed by the timer:
 
 ```cpp
 boost::asio::io_service io_service;
@@ -224,7 +224,7 @@ Create a functor which will make the cloud calls.
 This call will be repeatedly invoked on a one second interval.
 That one second **does not include** and **does not take into account** the processing time
 of the platform or the information roundtrip (the time it takes to connect, process and obtain the reply).
-It simply states that the callback will run every one second, **however** the response time may take longer than one second.
+It simply states that the callback will run every one second, **however** the response time may take less or more than one second.
 
 ```cpp
 std::function<void(const boost::system::error_code&)> func = [&](const auto & err) {
@@ -245,7 +245,8 @@ timer.async_wait(func);
 io_service.run();
 ```
 
-At this point we will obtain the faces of the picture every second.
+At this point we will obtain a list of faces found in the in a continous loop.
+Hit `CTRL+c` when you want to stop the application.
 
 ## Class reactor
 
@@ -255,31 +256,47 @@ In this scenario we define and implement a class which does just that.
 The `reactor` class methods will be used to handle cloud replies:
 
 ```cpp
-void reactor::handle_face(std::vector<rapp::object::face> faces)
-{        
-    std::cout << "Found " << faces.size() << " faces!" << std::endl;
-}
-
-void reactor::reactor::handle_ontology_sub(std::vector<std::string> classes)
-{        
-    std::cout << "Sub classes: " << std::endl;
-    for (const auto & str : classes) {
-        std::cout << str << std::endl;
-    }    
-}
-
-void reactor::handle_weather(std::vector<std::string> weather) 
+clas reactor
 {
-    std::cout << "Temperature: " << weather.at(1) << std::endl;
-    std::cout << "Humidity: " << weather.at(3) << std::endl;
-    std::cout << "Wind speed: " << weather.at(6) << std::endl;
-}
+public:
+
+    void handle_face(std::vector<rapp::object::face> faces)
+    {        
+        std::cout << "Found " << faces.size() << " faces!" << std::endl;
+    }
+
+    void reactor::handle_ontology_sub(std::vector<std::string> classes)
+    {        
+        std::cout << "Sub classes: " << std::endl;
+        for (const auto & str : classes) {
+            std::cout << str << std::endl;
+        }    
+    }
+
+    void handle_weather(std::vector<std::string> weather) 
+    {
+        std::cout << "Temperature: " << weather.at(1) << std::endl;
+        std::cout << "Humidity: " << weather.at(3) << std::endl;
+        std::cout << "Wind speed: " << weather.at(6) << std::endl;
+    }
+
+    ...    
 ```
 
 The reactor class also wraps around a `service_controller` and thus
 controls the calls.
 
-We construct it using
+```cpp
+class reactor
+{
+    ...
+
+private:
+    rapp::cloud::service_controller ctrl_;
+};
+```
+
+We construct it using:
 
 ```cpp
 reactor::reactor(rapp::cloud::platform info)
@@ -287,8 +304,8 @@ reactor::reactor(rapp::cloud::platform info)
 {}
 ```
 
-Where `ctrl_`  is a private member of `rapp::cloud::service_controller`.
-Making the calls is done in the `run` method.
+Making the calls is done using the `run` method.
+We also use it to bind to the handler methods.
 
 ```cpp
 void reactor::run(rapp::object::picture pic, std::string object, std::string city)
