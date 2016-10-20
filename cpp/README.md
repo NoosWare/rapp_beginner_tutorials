@@ -1,9 +1,9 @@
 #RAPP Tutorials in C++
 
-| **Content** |  |  |**Direct Access** |
-|-------------|--|--|------------------|
-|**Getting Started** |  |  | [Getting Started](Getting_started/) |
-|  | Platform information |  | [Platform information](Getting_started/platform_info/) |
+| **Content**        | **Subfolder**        |   |**Direct Access** |
+|--------------------|----------------------|----|------------------|
+|**Getting Started** |                      |  | [Getting Started](Getting_started/) |
+|                    | Platform information |  | [Platform information](Getting_started/platform_info/) |
 |  | Callbacks |  | [Callbacks](Getting_started/callbacks/) |
 |  | Cloud calls |  | [Cloud calls](Getting_started/available_services/) |
 |  | Batch |  | [Batch](Getting_started/batch/) |
