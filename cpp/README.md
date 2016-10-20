@@ -1,39 +1,40 @@
 #RAPP Tutorials in C++
 
-| **Content**        | **Subfolder**        |   |**Direct Access** |
+| **Content**        | **Subfolder**        |    |**Direct Access** |
 |--------------------|----------------------|----|------------------|
-|**Getting Started** |                      |  | [Getting Started](Getting_started/) |
-|                    | Platform information |  | [Platform information](Getting_started/platform_info/) |
-|  | Callbacks |  | [Callbacks](Getting_started/callbacks/) |
-|  | Cloud calls |  | [Cloud calls](Getting_started/available_services/) |
-|  | Batch |  | [Batch](Getting_started/batch/) |
-|  | Class reactor |  |  [Class reactor](Getting_started/class_reactor/) |
+|                    |                      |    |                  |
+|**Getting Started** |                      |  | [Getting Started](getting_started/) |
+|                    | Platform information |  | [Platform information](getting_started/platform_info/) |
+|  | Callbacks |  | [Callbacks](getting_started/callbacks/) |
+|  | Cloud calls |  | [Cloud calls](getting_started/available_services/) |
+|  | Batch |  | [Batch](getting_started/batch/) |
+|  | Class reactor |  |  [Class reactor](getting_started/class_reactor/) |
 |  |  |  |  |
-|**Vision** |  |  | [Vision](Vision/) |
-|  | Face detection |  | [Face detection](Vision/face_detection) |
-|  | Human detection |  | [Human detection](Vision/human_detection) |
-|  | Qr recognition |  | [Qr recognition](Vision/qr_recognition) |
-|  | Object recognition |  | [Object recognition](Vision/object_recognition) |
+|**Vision** |  |  | [vision](vision/) |
+|  | Face detection |  | [Face detection](vision/face_detection) |
+|  | Human detection |  | [Human detection](vision/human_detection) |
+|  | Qr recognition |  | [Qr recognition](vision/qr_recognition) |
+|  | Object recognition |  | [Object recognition](vision/object_recognition) |
 |  |  |  |  |
-|**Speech**|  |  | [Speech](Speech/) |
-|  | Set noise |  | [Set noise](Speech/set_noise_profile/) |
-|  | Speech recognition with Google |  | [Speech recognition with Google](Speech/speech_recognition_google) |
-|  | Speech recognition with Sphinx4 |  | [Speech recognition with Sphinx4](Speech/speech_recognition_sphinx4) |
-|  | Text to speech |  | [Text to speech](Speech/text_to_speech) |
+|**Speech**|  |  | [Speech](speech/) |
+|  | Set noise |  | [Set noise](speech/set_noise_profile/) |
+|  | Speech recognition Google |  | [Speech recognition with Google](speech/speech_recognition_google) |
+|  | Speech recognition Sphinx4 |  | [Speech recognition with Sphinx4](speech/speech_recognition_sphinx4) |
+|  | Text to speech |  | [Text to speech](speech/text_to_speech) |
 |  |  |  |
-|**Aldebaran NAO** |  |  | [Aldebaran NAO](Aldebaran_NAO/) |
-|  | CMake |  | [CMake](Aldebaran_NAO/CMake) |
-|  |  | Helloworld | [Helloworld](Aldebaran_NAO/CMake/helloworld/) |
-|  |  | Helloworld static | [Helloworld static](Aldebaran_NAO/CMake/helloworld_static) |
-|  |  | Face detection | [Face detection](Aldebaran_NAO/CMake/face_detection) |
-|  |  | Say Available Services | [Say available services](Aldebaran_NAO/CMake/say_services/) |
-|  | qibuild |  | [qibuild](Aldebaran_NAO/qibuild/) |
-|  |  | Helloworld | [Helloworld](Aldebaran_NAO/qibuild/helloworld/) |
-|  |  | Face detection | [Face detection](Aldebaran_NAO/qibuild/facedetection/) |
+|**Aldebaran NAO** |  |  | [Aldebaran NAO](aldebaran_nao/) |
+|  | CMake |  | [cmake](aldebaran_nao/cmake) |
+|  |  | Helloworld | [Helloworld](aldebaran_nao/cmake/helloworld/) |
+|  |  | Helloworld static | [Helloworld static](aldebaran_nao/cmake/helloworld_static) |
+|  |  | Face detection | [Face detection](aldebaran_nao/cmake/face_detection) |
+|  |  | Say Available Services | [Say available services](aldebaran_nao/cmake/say_services/) |
+|  | Qibuild |  | [qibuild](aldebaran_nao/qibuild/) |
+|  |  | Helloworld | [Helloworld](aldebaran_nao/qibuild/helloworld/) |
+|  |  | Face detection | [Face detection](aldebaran_nao/qibuild/facedetection/) |
 |  |  |  |  |
-| **Navigation** |  |  | [Navigation](Navigation/) |
-|  | Creating a map |  | [Creating a map](Navigation/creating_a_map/) |
-|  | Uploading a map |  | [Uploading a map](Navigation/uploading_a_map) |
-|  | Mapping with SLAM |  | [Mapping with SLAM](Navigation/mapping_slam/) |
-|  | Path planning 2D |  | [Path planning 2D](Navigation/path_planning/) |
+| **Navigation** |  |  | [navigation](navigation/) |
+|  | Creating a map |  | [Creating a map](navigation/creating_a_map/) |
+|  | Uploading a map |  | [Uploading a map](navigation/uploading_a_map) |
+|  | Mapping with SLAM |  | [Mapping with SLAM](navigation/mapping_slam/) |
+|  | Path planning 2D |  | [Path planning 2D](navigation/path_planning/) |
 
