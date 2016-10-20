@@ -349,5 +349,35 @@ Found 1 faces!
 # Sub-Folders
 
 Have a look at each subfolder in this repository.
+
+| Examples | Link |
+|----------|------|
+| Helloworld | [Helloworld](helloworld/) |
+| Helloworld static | [Helloworld static](helloworld_static)|
+| | |
+| Available services | [Available services](available_services/) |
+| Batch | [Batch](batch/) |
+| Class reactor | [Class reactor](class_reactor/) |
+| Cognitive games | [Cognitive games](cognitive_games/) |
+| Config | [Config](config/) |
+| Email handling | [Email handling](email_handling/) |
+| Face detection | [Face detection](face_detect/) |
+| Geolocation | [Geolocation](geolocation/) |
+| Hazard detection | [Hazard detection](hazard_detect/) |
+| Human detection | [Human detection](human_detect/) |
+| Knowrob ontology | [Knowrob ontology](knowrob_ontology/) |
+| Light detection | [Light detection](light_detection/) |
+| Loop | [Loop](loop/) |
+| News | [News](news/) |
+| Object recognition| [Object recognition](object_recognition/) |
+| Path planning | [Path planning](path_planning/) |
+| Picture handling | [Picture handling](picture_handling/) |
+| Qr detection | [Qr detection](qr_detect/) |
+| Set noise profile | [Set noise profile](set_noise_profile/) |
+| Speech recognition with Google | [Speech recognition with Google](speech_recognition_google/) |
+| Speech recognition with Sphinx4 | [Speech recognition with Sphinx4](speech_recognition_sphinx4/) |
+| Speech to text | [Speech to text](speech_to_text/) |
+| Weather | [Weather](weather/) |
+
 We go through each cloud class, as well as the design patterns explained above.
 If you need any help, you can chat with us at [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
