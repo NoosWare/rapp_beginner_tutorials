@@ -15,7 +15,7 @@
  */
 #include <opencv2/opencv.hpp>
 #include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/vision_recognition.hpp>
+#include <rapp/cloud/vision_detection.hpp>
 #include <rapp/objects/picture.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -26,7 +26,7 @@
 #include <chrono>
 
 /*
- * \brief Example of object_recognition showing the result in
+ * \brief Example of human_detection showing the result in
  *  a opencv interface.
  */
 int main()
@@ -51,7 +51,7 @@ int main()
      * And initialization of the matrix where we are
      * going to save the images of the camera
      */
-    cv::namedWindow("Object recognition", cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Human detection", cv::WINDOW_AUTOSIZE);
     cv::Mat frame;
 
     /*
@@ -59,22 +59,23 @@ int main()
      * Then proceed to create a cloud controller.
      * We'll use this object to create cloud calls to the platform.
      */
-    rapp::cloud::platform info = {"155.207.19.229", "9001", "rapp_token"}; 
+    rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
     rapp::cloud::service_controller ctrl(info);
 
     /*
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
-     * All it does is to show if it has found any object and 
-     * show in the window what object is.
+     * All it does is to show how many faces have been found and 
+     * show a rectangle in the picture where is that face.
      */
-    auto callback = [&](std::string objects) { 
-        if (objects.empty()) {
-            std::cout << "No objects found" << std::endl;
-        }
-        else {
-            std::cout << "Found " << objects << std::endl;
-            cv::putText(frame, objects, cv::Point(50,50), cv::FONT_HERSHEY_PLAIN, 2, cv::Scalar(0, 0, 255), 2);
+    auto callback = [&](std::vector<rapp::object::human> humans) { 
+        std::cout << "Found " << humans.size() << " humans" << std::endl;
+        for(auto each_human : humans) {
+            cv::rectangle(frame,
+                          cv::Point(each_human.get_left_x(), each_human.get_left_y()),
+                          cv::Point(each_human.get_right_x(), each_human.get_right_x()),
+                          cv::Scalar(0, 255, 0),
+                          2, 8, 0);
         }
     };
 
@@ -107,12 +108,13 @@ int main()
             auto pic = rapp::object::picture(bytes);
 
             before = now;
-            ctrl.make_call<rapp::cloud::object_recognition>(pic, callback);
-            cv::imshow("Object recognition", frame);
+            ctrl.make_call<rapp::cloud::human_detection>(pic, callback);
+            cv::imshow("Human detection", frame);
 		}
 		if (cv::waitKey(30) >= 0) {
 			break;
 		}
+        //boost::this_thread::sleep(boost::posix_time::milliseconds(300));
     }
     return 0;
 }

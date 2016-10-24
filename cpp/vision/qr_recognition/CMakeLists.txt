@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(face_detection)
+project(qr_recognition)
 
-add_executable(face_detection source/face_detection)
+add_executable(qr_recognition source/qr_recognition)
 
 set(LIBRARY_PATH ${LIBRARY_PATH} /usr/local/lib)
 
@@ -23,7 +23,7 @@ set(RAPP_LIBRARIES ${RAPP_LIBRARY}
 				   ${Boost_LIBRARIES}
 				   ${CMAKE_THREAD_LIBS_INIT})
 
-target_link_libraries(face_detection ${RAPP_LIBRARIES}
+target_link_libraries(qr_recognition ${RAPP_LIBRARIES}
                                      ${OpenCV_LIBS})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")

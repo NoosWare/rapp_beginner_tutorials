@@ -15,7 +15,7 @@
  */
 #include <opencv2/opencv.hpp>
 #include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/vision_recognition.hpp>
+#include <rapp/cloud/vision_detection.hpp>
 #include <rapp/objects/picture.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -26,7 +26,7 @@
 #include <chrono>
 
 /*
- * \brief Example of object_recognition showing the result in
+ * \brief Example of face_detection showing the result in
  *  a opencv interface.
  */
 int main()
@@ -34,24 +34,19 @@ int main()
     /* 
      * Initialization of the camera.
      * If your device is not in dev0, you'll have to change to the correct one.
-     * And we configure the camera to have a resolution of 640x480.
-     * With less resolution the time of process is lower.
      */
     cv::VideoCapture camera(0); 
     if(!camera.isOpened()) { 
         std::cout << "Failed to connect to the camera" << std::endl;
         return -1;
     }
-    camera.set(CV_CAP_PROP_FRAME_WIDTH,640);
-    camera.set(CV_CAP_PROP_FRAME_HEIGHT,480);
-
     /*
      * Create a window to see the result of the 
      * face detection in the pictures that we are taking.
      * And initialization of the matrix where we are
      * going to save the images of the camera
      */
-    cv::namedWindow("Object recognition", cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Face detection", cv::WINDOW_AUTOSIZE);
     cv::Mat frame;
 
     /*
@@ -59,29 +54,30 @@ int main()
      * Then proceed to create a cloud controller.
      * We'll use this object to create cloud calls to the platform.
      */
-    rapp::cloud::platform info = {"155.207.19.229", "9001", "rapp_token"}; 
+    rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
     rapp::cloud::service_controller ctrl(info);
 
     /*
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
-     * All it does is to show if it has found any object and 
-     * show in the window what object is.
+     * All it does is to show how many faces have been found and 
+     * show a rectangle in the picture where is that face.
      */
-    auto callback = [&](std::string objects) { 
-        if (objects.empty()) {
-            std::cout << "No objects found" << std::endl;
-        }
-        else {
-            std::cout << "Found " << objects << std::endl;
-            cv::putText(frame, objects, cv::Point(50,50), cv::FONT_HERSHEY_PLAIN, 2, cv::Scalar(0, 0, 255), 2);
+    auto callback = [&](std::vector<rapp::object::face> faces) { 
+        std::cout << "Found: " << faces.size() << " faces" << std::endl; 
+        for(auto each_face : faces) {
+            cv::rectangle(frame,
+                          cv::Point(each_face.get_left_x(), each_face.get_left_y()),
+                          cv::Point(each_face.get_right_x(), each_face.get_right_x()),
+                          cv::Scalar(255,0,0),
+                          1, 8, 0);
         }
     };
 
     /*
      * We create a variable chrono to count the time.
      * It's going to be used for making the call every
-     * 300 ms. If we don't do it, we could block the platform.
+     * 500 ms. If we don't do it, we could block the platform.
      * Other way, if you don't use the windows interface, it's to 
      * make the call like the `loop.cpp` example.
      */
@@ -97,7 +93,7 @@ int main()
 		auto now = std::chrono::system_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - before).count(); 
 
-		if (elapsed > 300) {
+		if (elapsed > 500) {
 			camera >> frame;
 
             std::vector<int> param = {{ CV_IMWRITE_PNG_COMPRESSION, 3 }};
@@ -107,12 +103,13 @@ int main()
             auto pic = rapp::object::picture(bytes);
 
             before = now;
-            ctrl.make_call<rapp::cloud::object_recognition>(pic, callback);
-            cv::imshow("Object recognition", frame);
+            ctrl.make_call<rapp::cloud::face_detection>(pic, true, callback);
+            cv::imshow("Face detection", frame);
 		}
 		if (cv::waitKey(30) >= 0) {
 			break;
 		}
+        boost::this_thread::sleep(boost::posix_time::milliseconds(500));
     }
     return 0;
 }

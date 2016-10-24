@@ -26,32 +26,27 @@
 #include <chrono>
 
 /*
- * \brief Example of object_recognition showing the result in
- *  a opencv interface.
+ * \brief Example of qr_detection showing the result in
+ *  a opencv interqr_code.
  */
 int main()
 {
     /* 
      * Initialization of the camera.
      * If your device is not in dev0, you'll have to change to the correct one.
-     * And we configure the camera to have a resolution of 640x480.
-     * With less resolution the time of process is lower.
      */
     cv::VideoCapture camera(0); 
     if(!camera.isOpened()) { 
         std::cout << "Failed to connect to the camera" << std::endl;
         return -1;
     }
-    camera.set(CV_CAP_PROP_FRAME_WIDTH,640);
-    camera.set(CV_CAP_PROP_FRAME_HEIGHT,480);
-
     /*
      * Create a window to see the result of the 
-     * face detection in the pictures that we are taking.
+     * qr_code detection in the pictures that we are taking.
      * And initialization of the matrix where we are
      * going to save the images of the camera
      */
-    cv::namedWindow("Object recognition", cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("QR recognition", cv::WINDOW_AUTOSIZE);
     cv::Mat frame;
 
     /*
@@ -59,30 +54,31 @@ int main()
      * Then proceed to create a cloud controller.
      * We'll use this object to create cloud calls to the platform.
      */
-    rapp::cloud::platform info = {"155.207.19.229", "9001", "rapp_token"}; 
+    rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
     rapp::cloud::service_controller ctrl(info);
 
     /*
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
-     * All it does is to show if it has found any object and 
-     * show in the window what object is.
+     * All it does is to show how many qr_codes have been found and 
+     * show a rectangle in the picture where is that qr_code.
      */
-    auto callback = [&](std::string objects) { 
-        if (objects.empty()) {
-            std::cout << "No objects found" << std::endl;
-        }
-        else {
-            std::cout << "Found " << objects << std::endl;
-            cv::putText(frame, objects, cv::Point(50,50), cv::FONT_HERSHEY_PLAIN, 2, cv::Scalar(0, 0, 255), 2);
+    auto callback = [&](std::vector<rapp::object::qr_code> qr_codes) { 
+        std::cout << "Found: " << qr_codes.size() << " qr_codes" << std::endl; 
+        for(auto each_qr_code : qr_codes) {
+            cv::rectangle(frame,
+                          cv::Point(each_qr_code.get_left_x(), each_qr_code.get_left_y()),
+                          cv::Point(each_qr_code.get_right_x(), each_qr_code.get_right_x()),
+                          cv::Scalar(255,0,0),
+                          1, 8, 0);
         }
     };
 
     /*
      * We create a variable chrono to count the time.
      * It's going to be used for making the call every
-     * 300 ms. If we don't do it, we could block the platform.
-     * Other way, if you don't use the windows interface, it's to 
+     * 500 ms. If we don't do it, we could block the platform.
+     * Other way, if you don't use the windows interqr_code, it's to 
      * make the call like the `loop.cpp` example.
      */
 	auto before = std::chrono::system_clock::now();
@@ -91,13 +87,13 @@ int main()
      * Infinite loop until we press a key.
      * All it does is every 500 ms is going to take the picture
      * from the camera and create a picture object with this 
-     * image. After that we make the call to do the face detection
+     * image. After that we make the call to do the qr_code detection
      */
     for (;;) {
 		auto now = std::chrono::system_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - before).count(); 
 
-		if (elapsed > 300) {
+		if (elapsed > 500) {
 			camera >> frame;
 
             std::vector<int> param = {{ CV_IMWRITE_PNG_COMPRESSION, 3 }};
@@ -107,12 +103,13 @@ int main()
             auto pic = rapp::object::picture(bytes);
 
             before = now;
-            ctrl.make_call<rapp::cloud::object_recognition>(pic, callback);
-            cv::imshow("Object recognition", frame);
+            ctrl.make_call<rapp::cloud::qr_recognition>(pic, callback);
+            cv::imshow("QR recognition", frame);
 		}
 		if (cv::waitKey(30) >= 0) {
 			break;
 		}
+        boost::this_thread::sleep(boost::posix_time::milliseconds(500));
     }
     return 0;
 }
