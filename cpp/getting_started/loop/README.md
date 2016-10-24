@@ -1,4 +1,8 @@
-## Cloud Loop
+# Cloud Loop
+------------
+
+* *This tutorial assumes that RAPP API is installed and built*
+* *This tutorial uses the 0.7.0 version* of the C++ API
 
 We'll show you how to do a simple loop with the API.
 Because we don't want to spam the CPU with a constant `for(;;)` loop, 
@@ -52,5 +56,3 @@ io_service.run();
 
 At this point we will obtain a list of faces found in the in a continous loop.
 Hit `CTRL+c` when you want to stop the application.
-
-

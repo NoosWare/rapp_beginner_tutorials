@@ -1,4 +1,8 @@
 # Class reactor
+--------------
+
+* *This tutorial assumes that RAPP API is installed and built*
+* *This tutorial uses the 0.7.0 version* of the C++ API
 
 Running cloud calls using lambdas may not always be easy; under certain conditions
 a reactor class which handles callbacks may be a better solution.

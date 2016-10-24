@@ -13,7 +13,7 @@ The parameters are the following ones:
 
 * **IP/domain**: You can choose between write the IP `155.207.19.229` or the domain `rapp.ee.auth.gr`. Both are valid.
 * **Port**: It's `9001`.
-* **Authentication token**: `rapp_token`. It's needed to authorise access to the platform services.   
+* **Authentication token**: It's needed to authorise access to the platform services. (e.g., `rapp_token`).  
 * **Protocol**: It's optional. You can choose between `http` or `https` protocols. The first one is by default.
 
 In every new program that you need to call the platform you'll have to create a new `platform` structure and write the parameters above.

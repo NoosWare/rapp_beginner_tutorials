@@ -4,7 +4,7 @@ add_executable(available_services source/available_services.cpp)
 set(LIBRARY_PATH ${LIBRARY_PATH} /usr/local/lib)
 find_library(RAPP_LIBRARY NAMES rapp REQUIRED)
 find_package(OpenSSL REQUIRED)
-find_package(Boost 1.55 COMPONENTS system REQUIRED)
+find_package(Boost COMPONENTS system REQUIRED)
 find_package(Threads REQUIRED)
 set(RAPP_LIBRARIES ${RAPP_LIBRARY} 
                    ${OPENSSL_LIBRARIES} 

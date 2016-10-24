@@ -32,7 +32,7 @@ This command download RAPP API in the directory where you are working.
 
 ## Building
 
-For the C++ RAPP API, please note you need to satisfy these *dependencies*.
+For the C++ RAPP API, please note you need to satisfy these [*dependencies*](#packages required).
 To build:
 
 ```shell

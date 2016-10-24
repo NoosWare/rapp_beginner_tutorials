@@ -1,4 +1,8 @@
-# Example cloud batches
+# Cloud Batches
+-------------
+
+* *This tutorial assumes that RAPP API is installed and built*
+* *This tutorial uses the 0.7.0 version* of the C++ API
 
 In the following example we are going to execute three actions at the same time:
 
@@ -13,7 +17,7 @@ Include the following headers:
 * vision_detection.hpp
 * iostream
 
-Then create a service controller as before:
+Then create a service controller as previous examples:
 
 ```cpp
 rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 

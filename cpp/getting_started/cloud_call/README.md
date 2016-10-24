@@ -1,7 +1,29 @@
-#Examples
-##Available Services
+#Cloud Call
+---------
 
-**This tutorial assumes that RAPP API is already installed**
+* *This tutorial assumes that RAPP API is installed and built*
+* *This tutorial uses the 0.7.0 version* of the C++ API
+
+RAPP Cloud is based on the *PaaS* (Platform as a Service) principle, 
+and the core notion is that you make requests to the platform and you will receive replies.
+It is **important** to note that the calls are asynchronous, and therefore the reply to your query
+is non-deterministic (it is not possible to guarantee time of execution). 
+Different queries will require different processing time,
+and as such you can run other code on the robot whilst a query is running on the cloud.
+
+## Service Controller
+
+RAPP is divided in two main parts:
+
+* a platform which is either on a cloud server, or on a computer you've setup.
+* an API which is a library and  headers that you use to communicate with the platform.
+
+The `service_controller` class is the controller used to run cloud calls. 
+When you instantiate an object, you have to specify the **address** and **port** of the platform.
+
+To see this better, we are going to explain `available_services` example.
+
+##Available Services
 
 In the following example we are going to query all the services that are available on the _rapp-platform_.
 We do that so we can obtain a list of possible cloud calls.
@@ -44,6 +66,9 @@ Finally, make the cloud call:
 ```cpp
 ctrl.make_call<rapp::cloud::available_services>(cb);
 ```
+
+*Note:* This call is going to block the service controller queue until it completes.
+You can run multiple calls using multiple service controllers, or a batch of calls (shown below)
 
 The reply will be:
 
