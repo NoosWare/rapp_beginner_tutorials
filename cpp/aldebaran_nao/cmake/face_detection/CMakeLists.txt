@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(face_detection)
 
-add_executable(face_detection main.cpp)
+add_executable(face_detection source/main.cpp)
 
 #RAPP
 find_package(rapp REQUIRED)

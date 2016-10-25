@@ -1,4 +1,8 @@
 #Nao with cmake files (static)
+--------------------
+
+* *This tutorial assumes that RAPP API static is installed and built*
+* *This tutorial uses the 0.7.0 version* of the C++ API
 
 This project and `helloworld_static` have been created to do the same 
 purpose than the tutorial written in `README.md` which you can find in `/nao_robot`.
@@ -47,7 +51,7 @@ This is going to show all the services that you can use with RAPP API.
 ##CMakeLists
 
 Like we said before, we are going to use only RAPP libraries, so this file will be similar to
-`available_services` example.
+`getting_started` example.
 
 ```
 cmake_minimum_required(VERSION 2.6)

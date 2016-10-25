@@ -1,8 +1,12 @@
 #Using RAPP and NAO with Qibuild
+-------------------
+
+* *This tutorial assumes that RAPP API is installed and built*
+* *This tutorial uses the 0.7.0 version* of the C++ API
+* *This tutorial assumes that Qibuild is installed*
+* *This tutorial assumes that NAOqi C++ SDK is downloaded*
 
 In this tutorial we'll run an RAPP API and NAOqi project in NAO robot build it with Qibuild.
-
-**This tutorial we assume that RAPP API static is installed, Qibuild installed  and NAOqi C++ SDK is downloaded from Aldebaran webpage**
 
 ##Code
 

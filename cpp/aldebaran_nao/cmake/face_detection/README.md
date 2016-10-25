@@ -1,4 +1,9 @@
 #Face detection with NAO cameras
+----------------------
+
+* *This tutorial assumes that RAPP API static is installed and built*
+* *This tutorial uses the 0.7.0 version* of the C++ API
+* *This tutorial assumes NAOqi C++ SDK is downloaded from Aldebaran webpage.
 
 In this tutorial we are going to do a simple example using the camera of NAO for taking a picture and 
 use RAPP API for detecting faces.

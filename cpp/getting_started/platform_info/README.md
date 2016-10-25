@@ -28,4 +28,24 @@ It allows to load the parameters of the platform from a file.
 * `std::string rapp::config::load_auth_token(std::string filename)`: Return `token` parameter, if there is, from a file.
 * `rapp::cloud::platform rapp::config::load_yaml_config(std::string filename)`: Return a `platform` variable fill with `ip/domain`, `port` and `protocol` from a `yaml` file.
 
-You can see an example in `rapp-api/cpp/examples/config.cpp`.
+You can see an example in `source/config.cpp`.
+
+###Build example
+
+To build the example, follow the next steps:
+
+1. Go to your project path (in our case `config/`)
+2. Build your project
+```
+mkdir build
+cd build 
+cmake ..
+make
+```
+
+3. If everything is ok, you will have created your executable `config` in the folder `build`.
+4. Run your executable
+    ```
+    ./config
+    ```
+Now you can explore and make your own projects!

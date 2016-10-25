@@ -61,7 +61,7 @@ int main()
      * If you run the example inside examples folder, this path is valid.
      * In other cases, you'll have to change it for a proper one.
      */
-    rapp::object::audio audio("data/object_classes_audio_4.ogg");
+    rapp::object::audio audio("../data/object_classes_audio_4.ogg");
 
     /*
      * We have to say the source of the audio. In the case of the 

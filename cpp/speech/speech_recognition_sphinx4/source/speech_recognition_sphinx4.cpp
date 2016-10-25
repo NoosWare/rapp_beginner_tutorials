@@ -53,7 +53,7 @@ int main()
      * If you run the example inside examples folder, this path is valid.
      * In other cases, you'll have to change it for a proper one.
      */
-    rapp::object::audio audio("data/yes-no.wav");
+    rapp::object::audio audio("../data/yes-no.wav");
 
     /*
      * We have to say the source of the audio. In the case of the 
@@ -73,9 +73,9 @@ int main()
                 jsgf += "public <greet> = Yes | No;\r\n";
 
     /*
-     * We make a call to speech_recognition_google to detect the words said
+     * We make a call to speech_recognition_sphinx4 to detect the words said
      * in a audio with sphinx4 tools.
-     * For more information \see rapp::cloud::speech_recognition_sphinx
+     * For more information \see rapp::cloud::speech_recognition_sphinx4
      */
     ctrl.make_call<rapp::cloud::speech_recognition_sphinx4>(audio.bytearray(), 
                                                             audio_src, 

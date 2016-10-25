@@ -1,4 +1,4 @@
-#Set noise 
+#Text to Speech
 -----------
 
 * *This tutorial assumes that RAPP API is installed and built*
@@ -12,18 +12,17 @@ You have to configure your project like this tree:
 project/
         CMakeLists.txt
         source/
-                set_noise_profile.cpp
+                text_to_speech.cpp
         build/
 ```
 
 ##Source code
 
-We are going to do a program to configure our noise profile.
-So in the future, when we want to do speech recognition, we will be able to denoise the noise.
+We are going to create an audio file from text.
 
-We created a project called `set_noise_profile` with a folder `source` where we have our
-example call `set_noise_profile.cpp`.
-You can see the complete example [here](source/set_noise_profile.cpp).
+We created a project called `text_to_speech` with a folder `source` where we have our
+example call `text_to_speech.cpp`.
+You can see the complete example [here](source/text_to_speech.cpp).
 
 We are going to initialize the platform information and the service controller, which is in charge
 of make the cloud calls to the RAPP platform:
@@ -33,28 +32,27 @@ rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"};
 rapp::cloud::service_controller ctrl(info);
 ```
 
-The only element we need is an audio file.
-In this case, we have an example with a lot of noise. 
-To be more efective you should change this audio for your own.
+We need a callback to save the audio in a file.
+You can change the name and type of the audio.
 
 ```cpp
-rapp::types::audio_source audio_src = rapp::types::nao_ogg;
-```
-
-To make the call we need the audio and define what kind of audio is.
-For defining you have to use `rapp::types::audio_source` enum. 
-You can find more information in `rapp-api/cpp/rapp/cloud/globals.hpp`.
-
-```cpp
-rapp::types::audio_source audio_src = rapp::types::nao_ogg;
+auto callback = [&](rapp::object::audio audio) { 
+        if (audio.save("audio.wav")) {
+            std::cout << "File saved" << std::endl;
+        }
+        else {
+            std::cout << "Error: file not save\r\n";
+        }
+    };
 ```
 
 Now, we can make the call. 
-We don't need a callback because we are going to send only the audio to the platform.
-The platform will set the noise of this audio to analize the followings.
+The only element we need is a string with the text that we want to record in the audio.
+In this case, we are going to start with `hello world`.
+If you want to choose a different language you have to change `en` for the language that you prefer.
 
 ```cpp
-ctrl.make_call<rapp::cloud::set_noise_profile>(audio.bytearray(), audio_src);
+ctrl.make_call<rapp::cloud::text_to_speech>("hello world", "en", callback);
 ```
 
 ##CMakeLists.txt
@@ -79,10 +77,10 @@ cmake ..
 make
 ```
 
-3. If everything is ok, you will have created your executable `set_noise_profile` in the folder build.
+3. If everything is ok, you will have created your executable `text_to_speech` in the folder build.
 4. Run your executable
     ```
-    ./set_noise_profile
+    ./text_to_speech
     ```
-
+At the end of the process you'll have an `audio.wav`in your `build` folder.
 Now you can explore and make your own projects!

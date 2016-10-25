@@ -1,8 +1,11 @@
-#Nao with cmake files
+#Say Services with CMake
+------------
+
+* *This tutorial assumes that RAPP API static is installed and built*
+* *This tutorial uses the 0.7.0 version* of the C++ API
+* *This tutorial assumes NAOqi C++ SDK is downloaded from Aldebaran webpage.
 
 In this tutorial we'll run an RAPP API and NAOqi project in NAO robot build it with CMake. 
-
-**This tutorial we assume that RAPP API static is installed and NAOqi C++ SDK is downloaded from Aldebaran webpage**
 
 ##Code
 

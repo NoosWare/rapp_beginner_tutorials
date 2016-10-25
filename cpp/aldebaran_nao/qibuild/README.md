@@ -1,6 +1,9 @@
 #Create a project with Qibuild for NAO
+-------------------------------
 
-**This tutorial assumes that you have installed Qibuild and RAPP libraries**
+* *This tutorial assumes that RAPP API is installed and built*
+* *This tutorial uses the 0.7.0 version* of the C++ API
+* *This tutorial assumes that Qibuild is installed*
 
 This is a simple tutorial for creating a project with Qibuild. 
 

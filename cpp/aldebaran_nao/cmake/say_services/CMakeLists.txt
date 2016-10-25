@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(say_services)
 
-add_executable(say_services main.cpp)
+add_executable(say_services source/main.cpp)
 
 #RAPP
 find_package(rapp REQUIRED)
