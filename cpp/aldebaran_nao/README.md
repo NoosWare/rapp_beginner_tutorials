@@ -1,6 +1,23 @@
 # Aldebaran NAO
 -------------
 
+## CMake and QIbuild
+
+You can use CMake or qibuild in your projects.
+
+| Tutorials | Tools | Link |
+|-----------|-------|------|
+|Helloworld | RAPP + CMake| [Helloworld](cmake/helloworld/)|
+|Helloworld | RAPP + NAOqi + qibuild | [qiHelloworld](qibuild/helloworld/)|
+|Helloworld Static | RAPP + CMake | [Helloworld static](cmake/helloworld_static/)|
+|Face detection | RAPP + NAOqi + CMake| [Face detection](cmake/face_detection/)|
+|Face detection| RAPP + NAOqi + qibuild | [qiFace detection](qibuild/facedetection/)|
+|Say Services | RAPP + NAOqi + CMake| [Say services](cmake/say_services/)|
+|           |       |   |
+
+The above tutorials use either full static linking, or a mix of static and shared libraries.
+Please see each individual tutorial for more details.
+
 ## NAOqi
 
 Aldebaran's OPEN NAO version is: Gentoo 2.6.33.9-rt31-aldebaran-rt
@@ -81,32 +98,14 @@ mkdir -p rapp-api/cpp/build && cd rapp-api/cpp/build
 cmake .. -DOPEN_NAO=ON
 ```
 
-Copy the produced static library under your `lib/` directory.
-
 ## Static Linking
 
-This serves as a reference point to building the rpath inside an executable.
-It probably won't be enough for GLIBC ABI miss-match but it can be used to specify **which** libraries to load from **where**.
-
-```{r, engine='bash', count_lines}
-g++ main.cpp -o app.static --std=c++14 -I/usr/local/include -L/urs/lib/i386-linux-gnu -static -lboost_system -lssl -lcrypto -lpthread -ldl -L lib -lrapp -Os -s -O2 -march=atom -mtune=atom -mfpmath=sse 
-```
-
-This will package all libraries within a single executbale.
-The downside is that this executable is large: 3.1Mb!
-
-1. Can we ship on NAO the libc, libstdc++, libboost_system, libssl and libcrypto? Is that enough?
-2. Alternatively, can an old VM (old Kernel, GLIBC, etc) be used to build the library and executables?
-3. Maybe an old VM (Ubuntu 12.XX) would be of more use, and I'd have to build GCC from scratch in there.
-
-
-Static linking is the easy and dirty way out: we bundle with our app everything: boost, ssl, stdc++, libc.
+Static linking is the easy way out: we bundle with our app everything: boost, ssl, stdc++, libc.
 This on its own accord creates certain issues:
 
 * libc requires at runtime the `dl` (dlopen, dlsym) often seen as `-ldl` even if we statically link
 * static link to libc disables `getaddressbyhostname` and disables some network functionality.
-* one way around this, is to use musl-libc: http://git.musl-libc.org/cgit/musl
-* another way is to rely on absolute IP addresses
+* the default solution is to rely on IP addresses and not hostnames
 
 Here we use:
 
@@ -116,36 +115,6 @@ Here we use:
 * a static `libsll` and `libcrypto` because there is a miss-match in the ABI on the robot
 * a static `libdl` (dlopen, etc.)
 * all static `libgcc_s`, `libstdc++` and `libc`
-
-As a result we get a warning:
-
-```
-/usr/lib/gcc/i686-linux-gnu/4.9/../../../i386-linux-gnu/libcrypto.a(dso_dlfcn.o): In function `dlfcn_globallookup':
-(.text+0xa): warning: Using 'dlopen' in statically linked applications requires at runtime the shared libraries from the glibc version used 
-for linking
-lib/librapp.a(asio_http.cpp.o): In function `boost::asio::detail::resolve_op<boost::asio::ip::tcp, boost::_bi::bind_t<void, boost::_mfi::mf2
-<void, rapp::cloud::asio_http, boost::system::error_code, boost::asio::ip::basic_resolver_iterator<boost::asio::ip::tcp> >, boost::_bi::list
-3<boost::_bi::value<rapp::cloud::asio_http*>, boost::arg<1> (*)(), boost::arg<2> (*)()> > >::do_complete(boost::asio::detail::task_io_servic
-e*, boost::asio::detail::task_io_service_operation*, boost::system::error_code const&, unsigned int)':
-asio_http.cpp:(.text._ZN5boost4asio6detail10resolve_opINS0_2ip3tcpENS_3_bi6bind_tIvNS_4_mfi3mf2IvN4rapp5cloud9asio_httpENS_6system10error_co
-deENS3_23basic_resolver_iteratorIS4_EEEENS5_5list3INS5_5valueIPSB_EEPFNS_3argILi1EEEvEPFNSL_ILi2EEEvEEEEEE11do_completeEPNS1_15task_io_servi
-ceEPNS1_25task_io_service_operationERKSD_j[_ZN5boost4asio6detail10resolve_opINS0_2ip3tcpENS_3_bi6bind_tIvNS_4_mfi3mf2IvN4rapp5cloud9asio_htt
-pENS_6system10error_codeENS3_23basic_resolver_iteratorIS4_EEEENS5_5list3INS5_5valueIPSB_EEPFNS_3argILi1EEEvEPFNSL_ILi2EEEvEEEEEE11do_complet
-eEPNS1_15task_io_serviceEPNS1_25task_io_service_operationERKSD_j]+0xcb): warning: Using 'getaddrinfo' in statically linked applications requ
-ires at runtime the shared libraries from the glibc version used for linking
-```
-
-This warning means two things:
-
-1. We cannot use `getaddrinfo` which is used by `boost::asio::detail::resolve_op<>` 
-2. Therefore we can only rely on IPs and not hostnames since resolution won't work
-
-Possible solutions are:
-
-1. Use IPs right away instead of hostnames (e.g., replace `rapp.auth.gr` with `155.207.19.229`)
-2. Use an external DNS resolver library to get the actual IP address of the hostname (e.g., `UDNS`, `GNU adns`, etc...)
-3. Communicate via pipes, stdmessages or some other way with the system, and get the address.
-4. Mix static linking with dynamic linking (more on that later)
 
 ## Dynamic Linking
 
@@ -169,7 +138,7 @@ The advantages are:
 * You don't have to rebuild anything for ATOM cpu, the shared libraries on your NAO are already optimised for that.
 * Your binary will be considerably smaller since you're only shipping your code and not the libraries.
 
-However, using RAPP API 0.7.0 when we do **not** statically link with boost, we will get miss-matched GLIBC ABI.
+However, using RAPP API when we do **not** statically link with boost, we will get miss-matched GLIBC ABI.
 
 ```
 ./app.dyn: /usr/lib/libcrypto.so.1.0.0: no version information available (required by ./app.dyn)
@@ -185,32 +154,12 @@ However, using RAPP API 0.7.0 when we do **not** statically link with boost, we 
 
 ## Hybrid Mode = ON
 
-You can try to mix and match static and dynamic libraries by using:
-
-```{r, engine='bash', count_lines}
-g++ main.cpp -o app.hybrid.tls --std=c++14 -I/usr/local/include -L/urs/lib/i386-linux-gnu -static-libstdc++ -static-libgcc -Wl,-Bstatic -lc -lssl -lcrypto -L lib -lrapp -Wl,-Bdynamic -lboost_system -lpthread -ldl -march=atom -mtune=atom -mfpmath=sse -s -Os -O2
-```
-
-We end up with a 2.5Mb executable which has mixed shared and static libraries.
-In this instance we did:
-
-* dynamic: `boost`, `pthreads` and `dl`
-* static: `rapp`, `ssl`, `crypto`, `gcc`, `stdc++`
-
+We can mix and match static and dynamic libraries.
 This still produces a large file which only relies on NAO's boost and threads.
-If you do not *want* SSL/TLS or you want don't care about ABI issues, you can also do:
-
-```{r, engine='bash', count_lines}
-g++ main.cpp -o app.hybrid.no_tls --std=c++14 -I/usr/local/include -L/urs/lib/i386-linux-gnu -static-libstdc++ -Wl,-Bstatic -lrapp -lboost_system -Wl,-Bdynamic -lpthread -lc -lssl -lcrypto -ldl -march=atom -mtune=atom -mfpmath=sse -s -Os -O2
-```
+If you do not *want* SSL/TLS or you want don't care about ABI warnings, you can also skip them.
 
 Now we end up with a 859Kb executable, a considerable improvement in size, but we have
 sacrificed compatability with SSL/TLS.
-In this case we did:
-
-* dynamic: `pthreads`, `ssl`, `crypto`, `dl`
-* static: `rapp`, `stdc++`, `boost`
-
 The executable when run will warn you about ABI miss-match during runtime:
 
 ```
@@ -218,21 +167,7 @@ The executable when run will warn you about ABI miss-match during runtime:
 ./app.mixed: /usr/lib/libssl.so.1.0.0: no version information available (required by ./app.mixed)
 ```
 
-If you only use HTTP for communicating with the cloud, then there exists no problem (TLS won't be used).
-
-## CMake and QIbuild
-
-You can use CMake or qibuild in your projects.
-
-| Tutorials | Tools | Link |
-|-----------|-------|------|
-|Helloworld | RAPP + CMake| [Helloworld](cmake/helloworld/)|
-|Helloworld | RAPP + NAOqi + qibuild | [qiHelloworld](qibuild/helloworld/)|
-|Helloworld Static | RAPP + CMake | [Helloworld static](cmake/helloworld_static/)|
-|Face detection | RAPP + NAOqi + CMake| [Face detection](cmake/face_detection/)|
-|Face detection| RAPP + NAOqi + qibuild | [qiFace detection](qibuild/facedetection/)|
-|Say Services | RAPP + NAOqi + CMake| [Say services](cmake/say_services/)|
-|           |       |   |
+If you only use HTTP for communicating with the cloud, then there is no issue (TLS won't be used).
 
 ## Getting Help
 
