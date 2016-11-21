@@ -119,15 +119,8 @@ Here we use:
 ## Dynamic Linking
 
 The conventional way is to use shared linraries which are dynamically loaded when executing.
-You can try this by using:
-
-```{r, engine='bash', count_lines}
-g++ main.cpp -o app.dyn --std=c++14 -I/usr/local/include -L/urs/lib/i386-linux-gnu -lboost_system -lssl -lcrypto -lpthread -Wl,-rpath=/home/nao/.lib/ -L ../lib -lrapp -march=atom -mtune=atom -mfpmath=sse -s -Os -O2
-```
-
 *NOTE* here we have to set the RPATH to the shared librapp, else it won't be found.
-
-The issues with this approach are numerous:
+The issues with this approach are:
 
 * Your application must be built using the same library versions or there will be an ABI miss-match.
 * Your building platform (computer or VM) must have the same libc (GLIBC) version as the one on the robot
