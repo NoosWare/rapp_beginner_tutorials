@@ -15,36 +15,33 @@ and as such you can run other code on the robot whilst a query is running on the
 
 RAPP is divided in two main parts:
 
-* a platform which is either on a cloud server, or on a computer you've setup.
-* an API which is a library and  headers that you use to communicate with the platform.
+* a platform which is either on a cloud server, or on a machine you've setup (PC, Robot).
+* an API which is a library that you use to communicate with the platform.
 
 The `service_controller` class is the controller used to run cloud calls. 
 When you instantiate an object, you have to specify the **address** and **port** of the platform.
 
-To see this better, we are going to explain `available_services` example.
-
 ##Available Services
 
-In the following example we are going to query all the services that are available on the _rapp-platform_.
-We do that so we can obtain a list of possible cloud calls.
+In the following example we query all the services that are available on the _rapp-platform_.
+We do so in order to obtain a list of cloud calls.
 
-Include the proper headers to your example. 
-In this case we only need three:
+First, include the proper headers to your example. 
+In this case we only need:
 
 1. `rapp/cloud/service_controller.hpp`
 2. `rapp/cloud/available_services.hpp`
 
-First we setup the struct `rapp::cloud::platform` which contains:
+Then we setup the struct `rapp::cloud::platform` which contains:
 1. The paltform hostname (`rapp.ee.auth.gr` or `155.207.19.229`). 
-2. The platform port
+2. The platform port (`9001`)
 3. Your authentication token
 
 ```cpp
 rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
 ```
 
-Then create a service controller (`ctrl`), which is in charge of creating and controlling cloud calls to the platform.
-The only argument needed is the information about the platform, which is saved in `info` variable:
+Then create a service controller (`ctrl`), which controls cloud calls to the platform. The only argument needed is the information about the platform, which is saved in the `info` variable:
 
 ```cpp
 rapp::cloud::service_controller ctrl(info);
@@ -67,9 +64,8 @@ Finally, make the cloud call:
 ctrl.make_call<rapp::cloud::available_services>(cb);
 ```
 
-*Note:* This call is going to block the service controller queue until it completes.
-You can run multiple calls using multiple service controllers, or a batch of calls (shown below)
-
+__*Note:*__ This call is going to block the service controller queue until it completes.
+You can run multiple calls using multiple service controllers, or a batch of calls.
 The reply will be:
 
 ```
@@ -104,6 +100,3 @@ cognitive_test_chooser http://rapp.ee.auth.gr:9001/hop/cognitive_test_chooser
 email_send http://rapp.ee.auth.gr:9001/hop/email_send
 email_fetch http://rapp.ee.auth.gr:9001/hop/email_fetch
 ```
-
-Thus, the platform has given you a list with the active running cloud services,
-which you can now use.
