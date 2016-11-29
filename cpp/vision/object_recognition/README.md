@@ -77,16 +77,15 @@ if (elapsed > 500) {
 
 ##Building the example
 
-1. Go to your project path (in our case `object_recognition/`)
-2. Build your project
-```
-mkdir build
-cd build 
-cmake ..
-make
-```
-
-3. Run the executable
+- Go to your project path (in our case `object_recognition/`)
+- Build the example:
+        ```
+        mkdir build
+        cd build 
+        cmake ..
+        make
+        ```
+- Run the executable
     ```
     ./object_recognition
     ```
