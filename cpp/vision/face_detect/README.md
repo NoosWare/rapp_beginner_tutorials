@@ -23,10 +23,9 @@ We created a project called `face_detection` with a folder `source` where we hav
 example call `face_detection.cpp`.
 You can see the complete example [here](source/face_detection.cpp).
 
-In this example we are going to take images from a camera and we are going to use this image
+In this example we take image data from a camera and we use the image
 to call the RAPP platform and look for faces.
-
-For taking a image from our usb camera we have to use OpenCV:
+For acquisition of the image from our usb camera we use OpenCV:
 
 ```cpp
 cv::VideoCapture camera(0); 
@@ -37,35 +36,30 @@ if(!camera.isOpened()) {
 ```
 
 We created the parameter `camera` which is our `dev0`. You will have to check if your camera is
-in the correct device and change the number if it's necessary. In the case that the program
-don't recognise any devices, the program will close.
+the correct device and change the number if necessary. In the case that the program
+doesn't recognise any devices, it will exit.
 
-In other examples, we only see the result with a stdout. Now we would like to see the position
-of the faces in the image that our camera is recording. So, we are going to create an OpenCV window:
+In previous `face_detection` examples, we only print the result of the cloud to stdout. In this example we are goint to  draw rectangles around the faces in the image that our camera is recording:
 
 ```cpp
 cv::namedWindow("Face detection", cv::WINDOW_AUTOSIZE);
 ```
 
-The size of the window depends of your camera resolution.
-At the same time, we can initialize our OpenCV matrix where we are going to save the image data
-from the camera:
+The size of the window depends on the camera resolution.
+We can initialize our OpenCV matrix where we are going to save the image data from the camera:
 
 ```cpp
 cv::Mat frame;
 ```
 
-At this point, we can continue our program like RAPP API examples.
-We are going to initialize the platform information and the service controller, which is in charge
-of make the cloud calls to the RAPP platform:
+We initialize the platform information and the service controller:
 
 ```cpp
 rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
 rapp::cloud::service_controller ctrl(info);
 ```
 
-One the parts that it's needed to make the face_detection call is to send a callback, 
-so we are going to do one before the `for` loop because we don't need to create it in every loop:
+We define an *inline* lambda which will capture by reference the variables used, and at the same time will iterate the discovered faces and draw a frame around them:
 
 ```cpp
 auto callback = [&](std::vector<rapp::object::face> faces) { 
@@ -80,15 +74,12 @@ auto callback = [&](std::vector<rapp::object::face> faces) {
 };
 ```
 
-This callback shows how many faces have been found and, if there is any, 
-it draws a blue rectangle in the image where the face is.
+__NOTE:__ keep in mind that we can't use a simple loop to make the calls. 
+There is a **pause** between the calls so that our client doesn't hog up the CPU. 
+Also, the platform may **block** us if we spam non-stop calls.
 
-Before writing the `for loop` we have to keep in mind that we can't use a simple loop
-to make the calls because we can **block the platform** if we don't stop sending calls. 
-Because of that we have the example `rapp-api/cpp/examples/loop.cpp`, where wait a second 
-for doing a call. However, we have the problem that `loop.cpp` example can't be use with
-the window interface of OpenCV. So, in the case we want to use the OpenCV interface, we are
-going to use a `std::chrono` object which is going to count the time between loops.
+Because of that we wait for a second (see `rapp-api/cpp/examples/loop.cpp`) before doing a call. 
+In the `loop` example we use a `std::chrono` object which counts the time between loops.
 In this example, we are going to make a call every 500 ms.
 
 ```cpp
@@ -100,90 +91,59 @@ for (;;) {
 }
 ```
 
-Another issue that we can find is to create a `picture` object, which we need it to make the face_detection call,
-because to create one it's needed a `ifstream`. This means, that `cv::Mat` we have to convert it in a correct way. 
-The good news is OpenCV has a function which is perfect for this `cv::imencode`.
-*To see more information, you can visit this web page: [cv::imencode](http://docs.opencv.org/2.4/modules/highgui/doc/reading_and_writing_images_and_video.html).*
-Then, every 500 ms we have to pass the parameter in this way:
+OpenCV has the function [`cv::imencode`](http://docs.opencv.org/2.4/modules/highgui/doc/reading_and_writing_images_and_video.html).
+which saves an image matrix to an image file.
+Thus, whilst we acquire an *image matrix* from OpenCV, we end up transmitting a **PNG** to the platform.
 
 ```cpp
 if (elapsed > 500) {
     camera >> frame;
-
     std::vector<int> param = {{ CV_IMWRITE_PNG_COMPRESSION, 3 }};
     cv::vector<uchar> buf;
     cv::imencode(".png", frame, buf, param);
     std::vector<rapp::types::byte> bytes(buf.begin(), buf.end());
     auto pic = rapp::object::picture(bytes);
-
     before = now;
     ctrl.make_call<rapp::cloud::face_detection>(pic, true, callback);
     cv::imshow("Face detection", frame);
 }
 ```
 
-After having the `picture` object, we can make the call and then show in the OpenCV interface (`cv::imshow`).
-However, the interface is not going to refresh the image until we use `cv::waitKey` function.
-
-*To see more information you can visit this web site: [OpenCV interface](http://docs.opencv.org/2.4/modules/highgui/doc/user_interface.html).*
-
-*NOTE: You'll have to add the propers headers at the begining of the file. If you have some doubts, you can see the complete example link above*
+After calling the cloud function, we use [`cv::imshow`](http://docs.opencv.org/2.4/modules/highgui/doc/user_interface.html) to draw the frame on the GUI.
+The interface is not going to refresh the image until we use `cv::waitKey` function.
 
 ##CMakeLists.txt
 
-In this case it assumes that you have built your RAPP API in the **static** and **shared** libraries mode.
-
-This file is going to be the same that we have in `helloworld/CMakeLists.txt` file.
+We assume that you have built your RAPP API in the **static** and **shared** libraries mode.
+This file is going to be the same that we have in `helloworld/CMakeLists.txt`.
 We only have to add the OpenCV library and change the names of the project and executable.
 
 *NOTE:* If you want to use only the **static** libraries, you can see `helloworld_static` project.
-
-Then, the only lines that we have to add are:
+The only lines that we have to add are:
 
 ```
 find_package(OpenCV REQUIRED)
-
- ...
-
 target_link_libraries(face_detection ${RAPP_LIBRARIES}
                                      ${OpenCV_LIBS})
 
 ```
 
-##Repository detail
-
-Before to do anything we have to be careful in the case that we are using a repository.
-If you are not using with your project, then ignore this part.
-In the case you are using one with Github, you will have to create a file call `.gitignore`
-(inside your project directory) where you only write this:
-
-```
-build/
-```
-
-This means that you are not going to save this folder in the repository. It is good to do it
-because in the case you shared your project, the other person won't have problems building it.
-It's a specific folder for every user.
-
 ##Building your code
 
-The next step is about create our `build` folder and run our code.
-
-Now we are going to work in the terminal.
+The next step is to create our `build` folder and build the prorgam:
 
 1. Go to your project path (in our case `face_detection/`)
 2. Build your project
-```
+```bash
 mkdir build
 cd build 
 cmake ..
 make
 ```
 
-3. If everything is ok, you will have created your executable `face_detection` in the folder build.
+3. If everything is ok, you will have an executable `face_detection` in the folder build.
 4. Run your executable
     ```
     ./face_detection
     ```
 
-Now you can explore and make your own projects!
