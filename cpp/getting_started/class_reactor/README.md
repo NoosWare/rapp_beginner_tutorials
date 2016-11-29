@@ -4,8 +4,8 @@
 * *This tutorial assumes that RAPP API is installed and built*
 * *This tutorial uses the 0.7.0 version* of the C++ API
 
-Running cloud calls using lambdas may not always be easy; under certain conditions
-a reactor class which handles callbacks may be a better solution.
+Running cloud calls using lambdas may not always be the best solution. 
+Under certain conditions a class which handles callbacks may be a better.
 In this scenario we define and implement a class which does just that.
 The `reactor` class methods will be used to handle cloud replies:
 
@@ -38,8 +38,7 @@ public:
 };
 ```
 
-The reactor class also wraps around a `service_controller` and thus
-controls the calls.
+The reactor class also wraps around a `service_controller` and thus controls the calls.
 
 ```cpp
 class reactor
@@ -59,8 +58,7 @@ reactor::reactor(rapp::cloud::platform info)
 {}
 ```
 
-Making the calls is done using the `run` method.
-We also use it to bind to the handler methods.
+Making the calls is done using the `run` method. We also use it to bind to the handler methods.
 
 ```cpp
 void reactor::run(rapp::object::picture pic, std::string object, std::string city)
@@ -75,6 +73,7 @@ Thus this method will run three different cloud calls as a batch job, whilst
 re-using its own methods to receive the replies.
 Because we're using class methods we have to either use `std::function` class members,
 or use a `bind` (either `std::bind` or `boost::bind`) to the class methods.
+A lambda callback could also be used, but it would have to capture `this`.
 
 Constructing a unique pointer to our reactor class is done like so:
 
@@ -100,4 +99,5 @@ Wind speed: 2.5
 Found 1 faces!
 ```
 
-
+Therefore, for more sophisticated use of a group of cloud calls, especially if post-processing or pre-processing
+is required, or if taking an object-oriented approach, a reactor class may be better suited.
