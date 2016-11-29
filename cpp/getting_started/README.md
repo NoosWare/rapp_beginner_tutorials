@@ -7,14 +7,14 @@ Version RAPP API: 0.7.0.
 
 ##Packages required
 
-Before installing RAPP API you need to install these packages:
+Before installing RAPP API you need to install these dependencies:
 
 - GCC and G++ 4.9 or higher
 - Boost 1.49 or higher  
 - CMake 2.6 or higher 
 - Git
 
-The packages can be installed using a terminal and the following commands:
+The dependencies can be installed using a terminal and the following command:
 
 ```shell
 sudo apt-get install gcc g++ git cmake libboost-all-dev
@@ -22,17 +22,17 @@ sudo apt-get install gcc g++ git cmake libboost-all-dev
 
 ##Download
 
-You can download directly from git in this [link](https://github.com/rapp-project/rapp-api.git) with your web browser or use the next command in your terminal:
+Clone directly from [github](https://github.com/rapp-project/rapp-api.git) using:
 
 ```shell
 git clone https://github.com/rapp-project/rapp-api.git
 ```
 
-This command download RAPP API in the directory where you are working.
+Alternatively, download the api as  a zip or tarball, and extract the API from there.
 
 ## Building
 
-For the C++ RAPP API, please note you need to satisfy these [*dependencies*](#packages required).
+For the C++ RAPP API, please note you need to have the [*dependencies*](#packages required) installed.
 To build:
 
 ```shell
@@ -43,7 +43,7 @@ cmake ..
 make
 ```
 
-You should end up with a library and/or tests and examples under your build directory.
+You will end up with a library and/or tests and examples under your build directory.
 
 ## CMake Options
 
@@ -61,8 +61,7 @@ You should end up with a library and/or tests and examples under your build dire
 * `-DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib/` (Optional: specify OpenSSL library directory)
 
 All of those arguments are optional, however depending on your scenario you may have to adjust.
-For example, building for a NAO robot the convenience flag `-DOPEN_NAO=ON` will create a static library optimising for an ATOM cpu
-using i386 architecture.
+For example, building for a NAO robot the convenience flag `-DOPEN_NAO=ON` will create a static library optimising for an ATOM cpu using i386 architecture.
 
 ## Installing
 
