@@ -17,25 +17,25 @@ Include the following headers:
 * vision_detection.hpp
 * iostream
 
-Then create a service controller as previous examples:
+Then create a service controller as in the previous examples:
 
 ```cpp
 rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
 rapp::cloud::service_controller ctrl(info);
 ```
 
-In this example we are going to use vision detection, so we need to load a picture.
-In this case we are going to detect faces, humans and doors in the same picture (for simplicty's shake).
-You can use the picture that you want using the correct path or use this example.
+In this example we are going to use vision detection, so we a picture.
+We will try to detect faces, humans and doors in the same picture.
 If loading a picture from disk, then constuct a `rapp::object::picture` object (replace *my_picture.jpg* with a valid one!).
+
+__NOTE:__ only *PNG* and *JPEG* are formats supported currently.
 
 ```cpp
 auto pic = rapp::object::picture("my_picture.jpg");
 ```
 
-Each cloud call takes a different callback functor, so
-we'll create one for each call.
-(You can find more information in `rapp/cloud/vision_detection.hpp`).
+Each cloud call takes a different callback functor, so we'll create one for each call.
+You can find more information for each class in `rapp/cloud/vision_detection.hpp`
 
 * face detection:
 
@@ -61,9 +61,7 @@ auto hazard_cb = [&](double door_angle) {
 };
 ```
 
-When we construct the batch, we construct the cloud call in a one-off statement
-as we execute `service_controller::make_calls`.
-For a complete parameter list of each class, please see the respective class documentation.
+When we run the batch, we construct the cloud call in inline object as we execute `service_controller::make_calls`:
 
 ```cpp
 ctrl.make_calls(rapp::cloud::face_detection(pic, false, face_cb),
@@ -79,7 +77,5 @@ Found 2 humans!
 Found 1 faces!
 ```
 
-The order of the calls may change: there is a probability that face detection may finish first
+The order of the calls may change: there is a possibility that face detection may finish first
 and then human detection.
-
-
