@@ -7,7 +7,7 @@
 We are going to do a project using OpenCV, RAPP and CMake.
 
 Using CMake requires you to configure your CMakeLists.txt in the **root** of your RAPP project.
-Essentially, the structure is the following:
+The structure is the following:
 
 ```
 project/
@@ -19,14 +19,13 @@ project/
 
 ##Source code
 
-We created a project called `qr_recognition` with a folder `source` where we have our
-example call `qr_recognition.cpp`.
+We create a project called `qr_recognition` with a folder `source` where we have our
+example `qr_recognition.cpp`.
 You can see the complete example [here](source/qr_recognition.cpp).
 
-In this example we are going to take images from a camera and we are going to use this image
-to call the RAPP platform and look for qr_codes.
-
-For taking a image from our usb camera we have to use OpenCV:
+In this example we are taking images from a camera and then
+we call the RAPP platform and look for qr_codes.
+We use a usb camera and OpenCV for image acquisition:
 
 ```cpp
 cv::VideoCapture camera(0); 
@@ -64,8 +63,7 @@ rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"};
 rapp::cloud::service_controller ctrl(info);
 ```
 
-One the parts that it's needed to make the qr_recognition call is to send a callback, 
-so we are going to do one before the `for` loop because we don't need to create it in every loop:
+One the parts that is needed to make the call is a callback:
 
 ```cpp
 auto callback = [&](std::vector<rapp::object::qr_code> qr_codes) { 
@@ -80,16 +78,9 @@ auto callback = [&](std::vector<rapp::object::qr_code> qr_codes) {
 };
 ```
 
-This callback shows how many qr_codes have been found and, if there is any, 
-it draws a blue rectangle in the image where the qr_code is.
-
-Before writing the `for loop` we have to keep in mind that we can't use a simple loop
-to make the calls because we can **block the platform** if we don't stop sending calls. 
-Because of that we have the example `rapp-api/cpp/examples/loop.cpp`, where wait a second 
-for doing a call. However, we have the problem that `loop.cpp` example can't be use with
-the window interqr_code of OpenCV. So, in the case we want to use the OpenCV interqr_code, we are
-going to use a `std::chrono` object which is going to count the time between loops.
-In this example, we are going to make a call every 500 ms.
+This callback shows how many qr_codes have been found and, if there are any, and
+it draws a blue rectangle around the qr code.
+In this example, we repeat the call every 500 ms.
 
 ```cpp
 auto before = std::chrono::system_clock::now();
@@ -100,70 +91,15 @@ for (;;) {
 }
 ```
 
-Another issue that we can find is to create a `picture` object, which we need it to make the qr_recognition call,
-because to create one it's needed a `ifstream`. This means, that `cv::Mat` we have to convert it in a correct way. 
-The good news is OpenCV has a function which is perfect for this `cv::imencode`.
-*To see more information, you can visit this web page: [cv::imencode](http://docs.opencv.org/2.4/modules/highgui/doc/reading_and_writing_images_and_video.html).*
-Then, every 500 ms we have to pass the parameter in this way:
-
-```cpp
-if (elapsed > 500) {
-    camera >> frame;
-
-    std::vector<int> param = {{ CV_IMWRITE_PNG_COMPRESSION, 3 }};
-    cv::vector<uchar> buf;
-    cv::imencode(".png", frame, buf, param);
-    std::vector<rapp::types::byte> bytes(buf.begin(), buf.end());
-    auto pic = rapp::object::picture(bytes);
-
-    before = now;
-    ctrl.make_call<rapp::cloud::qr_recognition>(pic, callback);
-    cv::imshow("QR recognition", frame);
-}
-```
-
-After having the `picture` object, we can make the call and then show in the OpenCV interqr_code (`cv::imshow`).
-However, the interqr_code is not going to refresh the image until we use `cv::waitKey` function.
-
-*To see more information you can visit this web site: [OpenCV interqr_code](http://docs.opencv.org/2.4/modules/highgui/doc/user_interqr_code.html).*
-
-*NOTE: You'll have to add the propers headers at the begining of the file. If you have some doubts, you can see the complete example link above*
-
 ##CMakeLists.txt
 
-In this case it assumes that you have built your RAPP API in the **static** and **shared** libraries mode.
-
-This file is going to be the same that we have in `helloworld/CMakeLists.txt` file.
-We only have to add the OpenCV library and change the names of the project and executable.
-
-*NOTE:* If you want to use only the **static** libraries, you can see `helloworld_static` project.
-
-Then, the only lines that we have to add are:
+We have updated `helloworld/CMakeLists.txt` to use opencv:
 
 ```
 find_package(OpenCV REQUIRED)
-
- ...
-
 target_link_libraries(qr_recognition ${RAPP_LIBRARIES}
                                      ${OpenCV_LIBS})
-
 ```
-
-##Repository detail
-
-Before to do anything we have to be careful in the case that we are using a repository.
-If you are not using with your project, then ignore this part.
-In the case you are using one with Github, you will have to create a file call `.gitignore`
-(inside your project directory) where you only write this:
-
-```
-build/
-```
-
-This means that you are not going to save this folder in the repository. It is good to do it
-because in the case you shared your project, the other person won't have problems building it.
-It's a specific folder for every user.
 
 ##Building your code
 
@@ -185,5 +121,4 @@ make
     ```
     ./qr_recognition
     ```
-
-Now you can explore and make your own projects!
+    
